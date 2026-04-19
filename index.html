@@ -115,10 +115,16 @@ button:hover {
     <div id="chatlog">
         <div class="message bot">Hello! Ask me about fees, exams, syllabus.</div>
     </div>
-
+<div id="suggestions">
+    <button onclick="quickMsg('fees')">Fees</button>
+    <button onclick="quickMsg('exam')">Exam</button>
+    <button onclick="quickMsg('placement')">Placement</button>
+</div>
     <div class="input-area">
         <input id="userInput" placeholder="Type a message...">
         <button onclick="sendMessage()">Send</button>
+        <br><br>
+        <button onclick="clearChat()">Clear Chat</button>
     </div>
 
     <button id="reportBtn" style="display:none;" onclick="reportIssue()">Report Incorrect Info</button>
@@ -155,6 +161,7 @@ async function sendMessage() {
 
     input.value = "";
     document.getElementById("reportBtn").style.display = "block";
+    saveChat();
 }
 
 async function reportIssue() {
@@ -165,6 +172,24 @@ async function reportIssue() {
 document.getElementById("userInput").addEventListener("keypress", function(e) {
     if (e.key === "Enter") sendMessage();
 });
+    function quickMsg(text){
+    document.getElementById("userInput").value = text;
+    sendMessage();
+}
+
+window.onload = () => {
+    const saved = localStorage.getItem("chat");
+    if(saved) document.getElementById("chatlog").innerHTML = saved;
+};
+
+function saveChat() {
+    localStorage.setItem("chat", document.getElementById("chatlog").innerHTML);
+}
+
+function clearChat(){
+    document.getElementById("chatlog").innerHTML = "";
+    localStorage.removeItem("chat");
+}
 </script>
 
 </body>
