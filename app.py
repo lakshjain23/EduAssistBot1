@@ -12,9 +12,9 @@ ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL")
 
 # Mock Database
 student_data = {
-    "fees": "...",
-    "exam": "...",
-    "syllabus": "...",
+    "fees": "The admission fee for Computer Engineering is ₹1,20,000 per year.",
+    "exam": "The Semester VIII exams are scheduled to start from May 15th.",
+    "syllabus": "You can download the syllabus from the 'Academics' folder in S3.",
     "admission": "Admissions start from June.",
     "placement": "Average placement is ₹6 LPA.",
     "hostel": "Hostel available.",
