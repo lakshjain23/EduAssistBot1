@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<body style="font-family: Arial; text-align: center; background: #f4f4f4;">
+    <h1>EduAssist Chatbot</h1>
+    <div style="background: white; width: 350px; margin: auto; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px #ccc;">
+        <div id="chatlog" style="height: 200px; overflow-y: auto; border-bottom: 1px solid #eee; margin-bottom: 10px; text-align: left;">
+            <p><strong>Bot:</strong> Hello! Ask me about fees, exams, or syllabus.</p>
+        </div>
+        <input id="userInput" type="text" placeholder="Type here..." style="width: 70%;">
+        <button onclick="sendMessage()">Send</button>
+        <br><br>
+        <button id="reportBtn" style="display:none; color: red;" onclick="reportIssue()">Report Incorrect Info</button>
+    </div>
+
+    <script>
+        // Replace with your Render Web Service URL after deployment
+        const BACKEND_URL = "https://your-app-name.onrender.com";
+
+        async function sendMessage() {
+            const msg = document.getElementById("userInput").value;
+            const log = document.getElementById("chatlog");
+            log.innerHTML += `<p><strong>You:</strong> ${msg}</p>`;
+            
+            const response = await fetch(`${BACKEND_URL}/chat`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({message: msg})
+            });
+            const data = await response.json();
+            log.innerHTML += `<p><strong>Bot:</strong> ${data.answer}</p>`;
+            document.getElementById("reportBtn").style.display = "inline";
+            document.getElementById("userInput").value = "";
+        }
+
+        async function reportIssue() {
+            await fetch(`${BACKEND_URL}/report`, { method: 'POST' });
+            alert("Admin has been notified via email!");
+        }
+    </script>
+</body>
+</html>
