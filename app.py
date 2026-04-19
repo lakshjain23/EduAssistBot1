@@ -18,6 +18,10 @@ student_data = {
 }
 
 # ✅ FIXED: methods added
+@app.route('/')
+def home():
+    return "EduAssist Backend Running 🚀"
+    
 @app.route('/chat', methods=['POST'])
 def chat():
     data = request.get_json()
