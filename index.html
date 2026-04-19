@@ -1,78 +1,88 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>EduAssist Chatbot</title>
+<title>EduAssist</title>
 
 <style>
 body {
-    font-family: Arial;
-    background: linear-gradient(to right, #667eea, #764ba2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
     margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f0f2f5;
 }
 
-.chat-container {
-    background: white;
-    width: 380px;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+/* Header */
+.header {
+    background: #667eea;
+    color: white;
     padding: 15px;
-}
-
-h1 {
     text-align: center;
     font-size: 20px;
+    font-weight: bold;
 }
 
+/* Chat container */
+.chat-container {
+    max-width: 500px;
+    margin: 20px auto;
+    background: white;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+/* Chat area */
 #chatlog {
-    height: 250px;
+    flex: 1;
+    padding: 15px;
     overflow-y: auto;
-    border: 1px solid #eee;
-    padding: 10px;
-    border-radius: 8px;
-    background: #fafafa;
+    background: #f9fafb;
 }
 
+/* Messages */
 .message {
+    padding: 10px 14px;
     margin: 8px 0;
-    padding: 8px 12px;
-    border-radius: 15px;
+    border-radius: 18px;
     max-width: 75%;
+    animation: fadeIn 0.3s ease-in;
 }
 
 .user {
     background: #667eea;
     color: white;
     margin-left: auto;
-    text-align: right;
 }
 
 .bot {
-    background: #e5e5ea;
+    background: #e5e7eb;
 }
 
+/* Input area */
 .input-area {
     display: flex;
-    margin-top: 10px;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    background: white;
 }
 
 input {
     flex: 1;
-    padding: 8px;
-    border-radius: 8px;
+    padding: 10px;
+    border-radius: 20px;
     border: 1px solid #ccc;
+    outline: none;
 }
 
 button {
-    margin-left: 5px;
-    padding: 8px 12px;
+    margin-left: 8px;
+    padding: 10px 15px;
     border: none;
+    border-radius: 20px;
     background: #667eea;
     color: white;
-    border-radius: 8px;
     cursor: pointer;
 }
 
@@ -80,10 +90,17 @@ button:hover {
     background: #5a67d8;
 }
 
+/* Report button */
 #reportBtn {
+    background: #ef4444;
     width: 100%;
-    margin-top: 10px;
-    background: #e53e3e;
+    border-radius: 0;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(5px);}
+    to {opacity: 1; transform: translateY(0);}
 }
 </style>
 
@@ -91,55 +108,57 @@ button:hover {
 
 <body>
 
+<div class="header">EduAssist Chatbot 🤖</div>
+
 <div class="chat-container">
-    <h1>EduAssist 🤖</h1>
 
     <div id="chatlog">
-        <div class="message bot">Hello! Ask me about fees, exams, or syllabus.</div>
+        <div class="message bot">Hello! Ask me about fees, exams, syllabus.</div>
     </div>
 
     <div class="input-area">
-        <input id="userInput" type="text" placeholder="Type your message...">
+        <input id="userInput" placeholder="Type a message...">
         <button onclick="sendMessage()">Send</button>
     </div>
 
     <button id="reportBtn" style="display:none;" onclick="reportIssue()">Report Incorrect Info</button>
+
 </div>
 
 <script>
 const BACKEND_URL = "https://eduassistbot1-2.onrender.com";
 
 async function sendMessage() {
-    const msg = document.getElementById("userInput").value;
-    const log = document.getElementById("chatlog");
-
+    const input = document.getElementById("userInput");
+    const msg = input.value.trim();
     if (!msg) return;
+
+    const log = document.getElementById("chatlog");
 
     log.innerHTML += `<div class="message user">${msg}</div>`;
 
-    const typing = `<div class="message bot" id="typing">Typing...</div>`;
-    log.innerHTML += typing;
+    log.innerHTML += `<div class="message bot" id="typing">Typing...</div>`;
     log.scrollTop = log.scrollHeight;
 
-    const response = await fetch(`${BACKEND_URL}/chat`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+    const res = await fetch(`${BACKEND_URL}/chat`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
         body: JSON.stringify({message: msg})
     });
 
-    const data = await response.json();
+    const data = await res.json();
 
     document.getElementById("typing").remove();
 
     log.innerHTML += `<div class="message bot">${data.answer}</div>`;
     log.scrollTop = log.scrollHeight;
 
-    document.getElementById("userInput").value = "";
+    input.value = "";
     document.getElementById("reportBtn").style.display = "block";
 }
 
 async function reportIssue() {
-    await fetch(`${BACKEND_URL}/report`, { method: 'POST' });
+    await fetch(`${BACKEND_URL}/report`, { method: "POST" });
     alert("Admin notified!");
 }
 
