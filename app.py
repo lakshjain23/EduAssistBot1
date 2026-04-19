@@ -4,9 +4,9 @@ import os
 import requests
 
 app = Flask(__name__)
-CORS(app) # Allows your frontend to talk to this backend
+CORS(app) 
 
-# Replace with your Resend API Key
+# Replace with your actual Resend API Key and your email
 RESEND_API_KEY = "your_resend_api_key_here"
 ADMIN_EMAIL = "your-email@example.com"
 
@@ -14,15 +14,14 @@ ADMIN_EMAIL = "your-email@example.com"
 student_data = {
     "fees": "The admission fee for Computer Engineering is ₹1,20,000 per year.",
     "exam": "The Semester VIII exams are scheduled to start from May 15th.",
-    "syllabus": "You can download the syllabus from the 'Academics' folder in S3."
+    "syllabus": "You can download the syllabus from the 'Academics' folder in the portal."
 }
 
 @app.route('/chat', methods=)
 def chat():
     user_msg = request.json.get("message", "").lower()
     
-    # Simple logic to find the answer 
-    answer = "I'm sorry, I don't have information on that. Try 'fees', 'exam', or 'syllabus'."
+    answer = "I'm sorry, I don't have information on that. Try asking about 'fees', 'exam', or 'syllabus'."
     for key in student_data:
         if key in user_msg:
             answer = student_data[key]
@@ -46,4 +45,6 @@ def report():
     return jsonify({"status": "Admin Notified!"})
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=10000)
+    # Render uses port 10000 by default for free tier
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
