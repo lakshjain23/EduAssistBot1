@@ -1,4 +1,3 @@
-This tells Render which libraries to install.
 flask
 flask-cors
 requests
